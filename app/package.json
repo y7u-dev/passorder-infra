@@ -1,0 +1,16 @@
+{
+  "name": "passorder-api",
+  "version": "1.0.0",
+  "description": "Passorder-like cafe order API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
