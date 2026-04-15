@@ -25,7 +25,7 @@ variable "eks_node_instance_type" {
 variable "eks_node_desired" {
   description = "EKS 워커 노드 기본 개수"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "eks_node_min" {
