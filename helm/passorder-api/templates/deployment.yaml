@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: passorder-api
+  namespace: default
+  labels:
+    app: passorder-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: passorder-api
+  template:
+    metadata:
+      labels:
+        app: passorder-api
+    spec:
+      containers:
+        - name: passorder-api
+          image: 975324004664.dkr.ecr.ap-northeast-2.amazonaws.com/passorder-api:latest
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5

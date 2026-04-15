@@ -21,7 +21,7 @@ module "eks" {
       desired_size = var.eks_node_desired
 
       # Spot Instance 설정
-      capacity_type = "SPOT"
+      capacity_type = "ON_DEMAND"
 
       labels = {
         Environment = var.environment

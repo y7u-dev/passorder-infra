@@ -19,7 +19,7 @@ variable "environment" {
 variable "eks_node_instance_type" {
   description = "EKS 워커 노드 인스턴스 타입"
   type        = string
-  default     = "t3.medium"
+  default     = "t3.small"
 }
 
 variable "eks_node_desired" {
