@@ -1,6 +1,6 @@
 image:
   repository: 975324004664.dkr.ecr.ap-northeast-2.amazonaws.com/passorder-api
-  tag: 34
+  tag: 35
 
 replicaCount: 1
 
