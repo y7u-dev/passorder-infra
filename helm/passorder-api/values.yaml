@@ -2,7 +2,7 @@ image:
   repository: 975324004664.dkr.ecr.ap-northeast-2.amazonaws.com/passorder-api
   tag: latest
 
-replicaCount: 2
+replicaCount: 1
 
 resources:
   requests:
