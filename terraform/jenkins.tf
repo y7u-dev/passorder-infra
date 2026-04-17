@@ -45,17 +45,20 @@ resource "aws_instance" "jenkins" {
   user_data = <<-EOF
     #!/bin/bash
     apt-get update -y
-    apt-get install -y openjdk-17-jdk curl gnupg
+    apt-get install -y curl fontconfig openjdk-21-jre
 
-    curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | gpg --dearmor -o /usr/share/keyrings/jenkins-keyring.gpg
+    install -d -m 0755 /etc/apt/keyrings
+    curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key \
+      -o /etc/apt/keyrings/jenkins-keyring.asc
+    chmod 644 /etc/apt/keyrings/jenkins-keyring.asc
 
-    echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/" | tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+    echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" \
+      | tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 
     apt-get update -y
     apt-get install -y jenkins
-    systemctl enable jenkins
-    systemctl start jenkins
-  EOF  
+    systemctl enable --now jenkins
+  EOF
 
   tags = {
     Name = "${var.project}-jenkins"
