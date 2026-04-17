@@ -35,13 +35,13 @@ pipeline {
                 """
             }
         }
-
         stage('Update Helm values') {
             steps {
                 sh """
                     sed -i "s/tag: .*/tag: ${IMAGE_TAG}/" helm/passorder-api/values.yaml
                     git config user.email "jenkins@passorder.com"
                     git config user.name "Jenkins"
+                    git checkout main
                     git add helm/passorder-api/values.yaml
                     git commit -m "ci: update image tag to ${IMAGE_TAG}"
                     git push origin main
