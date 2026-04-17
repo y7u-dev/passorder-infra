@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: passorder-api
-          image: 975324004664.dkr.ecr.ap-northeast-2.amazonaws.com/passorder-api:latest
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
             - containerPort: 3000
           resources:
