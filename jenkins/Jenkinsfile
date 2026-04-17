@@ -37,18 +37,23 @@ pipeline {
         }
         stage('Update Helm values') {
             steps {
-                sh """
-                    sed -i "s/tag: .*/tag: ${IMAGE_TAG}/" helm/passorder-api/values.yaml
-                    git config user.email "jenkins@passorder.com"
-                    git config user.name "Jenkins"
-                    git checkout main
-                    git add helm/passorder-api/values.yaml
-                    git commit -m "ci: update image tag to ${IMAGE_TAG}"
-                    git push origin main
-                """
+                withCredentials([usernamePassword(
+                    credentialsId: 'github-credentials',
+                    usernameVariable: 'GIT_USER',
+                    passwordVariable: 'GIT_TOKEN'
+                )]) {
+                    sh """
+                        sed -i "s/tag: .*/tag: ${IMAGE_TAG}/" helm/passorder-api/values.yaml
+                        git config user.email "jenkins@passorder.com"
+                        git config user.name "Jenkins"
+                        git checkout -B main origin/main
+                        git add helm/passorder-api/values.yaml
+                        git commit -m "ci: update image tag to ${IMAGE_TAG}"
+                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/y7u-dev/passorder-infra.git main
+                    """
+                }
             }
         }
-    }
 
     post {
         success {
