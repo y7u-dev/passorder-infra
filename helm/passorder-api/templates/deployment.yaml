@@ -6,7 +6,7 @@ metadata:
   labels:
     app: passorder-api
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: passorder-api
