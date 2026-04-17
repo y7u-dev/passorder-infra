@@ -18,7 +18,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 dir('app') {
-                    sh 'docker build -t ${ECR_REPO}:${IMAGE_TAG} .'
+                    sh "docker build -t ${ECR_REPO}:${IMAGE_TAG} ."
                 }
             }
         }
@@ -26,8 +26,7 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 sh """
-                    aws ecr get-login-password --region ${AWS_REGION} | \
-                    docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                    aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                     docker tag ${ECR_REPO}:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
                     docker tag ${ECR_REPO}:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:latest
                     docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
@@ -35,13 +34,10 @@ pipeline {
                 """
             }
         }
+
         stage('Update Helm values') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'github-credentials',
-                    usernameVariable: 'GIT_USER',
-                    passwordVariable: 'GIT_TOKEN'
-                )]) {
+                withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                     sh """
                         sed -i "s/tag: .*/tag: ${IMAGE_TAG}/" helm/passorder-api/values.yaml
                         git config user.email "jenkins@passorder.com"
@@ -54,6 +50,7 @@ pipeline {
                 }
             }
         }
+    }
 
     post {
         success {
