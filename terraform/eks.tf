@@ -20,7 +20,9 @@ module "eks" {
       max_size     = var.eks_node_max
       desired_size = var.eks_node_desired
 
-      # Spot Instance 설정
+      # Spot Instance 사용 시도했으나 AWS 신규 계정 quota 0으로 실패
+      # On-Demand로 변경하여 진행
+      # 실제 운영 환경에서는 On-Demand 최소 1개 + Spot 혼합 구성 권장
       capacity_type = "ON_DEMAND"
 
       labels = {
