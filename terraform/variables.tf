@@ -25,11 +25,11 @@ variable "eks_node_instance_type" {
 }
 
 variable "eks_node_desired" {
-  description = "EKS 워커 노드 기본 개수"
-  type        = number
-  default     = 2
-  # 초기 1로 설정했으나 시스템 Pod(Argo CD 등)로 인해 Too many pods 발생
-  # 노드 2개로 증설하여 해결
+  default = 3
+}
+
+variable "eks_node_max" {
+  default = 3
 }
 
 variable "eks_node_min" {
