@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION      = 'ap-northeast-2'
-        ECR_REGISTRY    = '975324004664.dkr.ecr.ap-northeast-2.amazonaws.com'
-        ECR_REPO        = 'passorder-api'
-        IMAGE_TAG       = "${BUILD_NUMBER}"
+        AWS_REGION   = 'ap-northeast-2'
+        ECR_REGISTRY = '975324004664.dkr.ecr.ap-northeast-2.amazonaws.com'
+        ECR_REPO     = 'passorder-api'
+        IMAGE_TAG    = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -25,23 +25,37 @@ pipeline {
 
         stage('Push to ECR') {
             steps {
-                sh '''
+                sh """
                     aws ecr get-login-password --region ${AWS_REGION} | \
                     docker login --username AWS --password-stdin ${ECR_REGISTRY}
-                    
                     docker tag ${ECR_REPO}:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
                     docker tag ${ECR_REPO}:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:latest
-                    
                     docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
                     docker push ${ECR_REGISTRY}/${ECR_REPO}:latest
-                '''
+                """
             }
         }
 
         stage('Update Helm values') {
             steps {
-                sh '''
+                sh """
                     sed -i "s/tag: .*/tag: ${IMAGE_TAG}/" helm/passorder-api/values.yaml
                     git config user.email "jenkins@passorder.com"
                     git config user.name "Jenkins"
-                    git add helm/passorder-api/v
+                    git add helm/passorder-api/values.yaml
+                    git commit -m "ci: update image tag to ${IMAGE_TAG}"
+                    git push origin main
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded! Argo CD will sync automatically.'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
