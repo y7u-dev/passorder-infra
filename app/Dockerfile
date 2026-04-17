@@ -1,16 +1,15 @@
 FROM node:18-alpine
 
-# 보안: root 대신 node 유저 사용
-USER node
-
 WORKDIR /app
 
-# 의존성 먼저 복사 (캐시 활용)
+# 먼저 소유권 설정 후 USER 변경
 COPY --chown=node:node package*.json ./
 RUN npm ci --only=production
 
-# 소스코드 복사
 COPY --chown=node:node src/ ./src/
+
+# 마지막에 USER 설정
+USER node
 
 EXPOSE 3000
 
