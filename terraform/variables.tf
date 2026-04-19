@@ -28,10 +28,6 @@ variable "eks_node_desired" {
   default = 3
 }
 
-variable "eks_node_max" {
-  default = 3
-}
-
 variable "eks_node_min" {
   description = "EKS 워커 노드 최소 개수"
   type        = number
@@ -41,5 +37,5 @@ variable "eks_node_min" {
 variable "eks_node_max" {
   description = "EKS 워커 노드 최대 개수"
   type        = number
-  default     = 2
+  default     = 3
 }
